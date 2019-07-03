@@ -8,8 +8,14 @@
 
 #import "TimelineViewController.h"
 #import "APIManager.h"
+#import "TweetCell.h"
+#import "Tweet.h"
+#import "UIImageView+AFNetworking.h"
 
-@interface TimelineViewController ()
+@interface TimelineViewController () <UITableViewDataSource, UITableViewDelegate>
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) NSArray *tweets;
 
 @end
 
@@ -17,24 +23,56 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];//dka added here
+    
+    self.tableView.dataSource = self;//step 3 VC becomes dataSource and delegate
+    self.tableView.delegate = self;//step 3 VC becomes dataSource and delegate
+    self.tableView.rowHeight = 200;
     
     // Get timeline
-    [[APIManager shared] getHomeTimelineWithCompletion:^(NSArray *tweets, NSError *error) {
+    [[APIManager shared] getHomeTimelineWithCompletion:^(NSArray<Tweet *> *tweets, NSError *error) {// step 4: make an API request
         if (tweets) {
-            NSLog(@"😎😎😎 Successfully loaded home timeline");
-            for (NSDictionary *dictionary in tweets) {
-                NSString *text = dictionary[@"text"];
-                NSLog(@"%@", text);
-            }
+            self.tweets = tweets;// step 6: actually stores data
+            [self.tableView reloadData]; // step 7 reload table
+            
         } else {
             NSLog(@"😫😫😫 Error getting home timeline: %@", error.localizedDescription);
         }
     }];
 }
 
+
+
+
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{// step 8 ask them
+    return self.tweets.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    TweetCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TweetCell"];
+    Tweet *tweet = self.tweets[indexPath.row];
+    
+    cell.name.text = tweet.user.name;
+    cell.actualTweet.text = tweet.text;
+    cell.createdAt.text = tweet.createdAtString;
+    cell.favorite.text = [NSString stringWithFormat:@"%d", tweet.favoriteCount];
+    cell.retweeted.text =[NSString stringWithFormat:@"%d", tweet.retweetCount];
+    
+    
+    NSString *fullURLString = tweet.user.profilePhoto;
+    NSURL *actualURL = [NSURL URLWithString:fullURLString];
+    [cell.profilePhoto setImageWithURL:actualURL];
+    
+    
+    return cell;
 }
 
 /*
