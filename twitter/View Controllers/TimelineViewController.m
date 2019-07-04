@@ -16,6 +16,7 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSArray *tweets;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 @end
 
@@ -23,26 +24,32 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];//dka added here
+    
+    
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(fetchTweets) forControlEvents:UIControlEventValueChanged];
+    [self.tableView insertSubview:self.refreshControl atIndex:0];
     
     self.tableView.dataSource = self;//step 3 VC becomes dataSource and delegate
     self.tableView.delegate = self;//step 3 VC becomes dataSource and delegate
-    self.tableView.rowHeight = 200;
     
+    [self fetchTweets];
+    
+}
+
+
+-(void)fetchTweets {
     // Get timeline
     [[APIManager shared] getHomeTimelineWithCompletion:^(NSArray<Tweet *> *tweets, NSError *error) {// step 4: make an API request
         if (tweets) {
             self.tweets = tweets;// step 6: actually stores data
             [self.tableView reloadData]; // step 7 reload table
-            
         } else {
             NSLog(@"😫😫😫 Error getting home timeline: %@", error.localizedDescription);
         }
+        [self.refreshControl endRefreshing];
     }];
 }
-
-
-
 
 
 
@@ -75,15 +82,16 @@
     return cell;
 }
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    id vc = [segue destinationViewController];
 }
-*/
+
 
 
 @end
