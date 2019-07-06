@@ -11,6 +11,8 @@
 #import "TweetCell.h"
 #import "Tweet.h"
 #import "UIImageView+AFNetworking.h"
+#import "AppDelegate.h"
+#import "LoginViewController.h"
 
 @interface TimelineViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -21,7 +23,6 @@
 @end
 
 @implementation TimelineViewController
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -51,6 +52,14 @@
     }];
 }
 
+- (IBAction)logout:(id)sender {
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LoginViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
+    appDelegate.window.rootViewController = loginViewController;
+    [[APIManager shared] logout];
+}
+
 
 
 - (void)didReceiveMemoryWarning {
@@ -72,8 +81,9 @@
     cell.createdAt.text = tweet.createdAtString;
     cell.favorite.text = [NSString stringWithFormat:@"%d", tweet.favoriteCount];
     cell.retweeted.text =[NSString stringWithFormat:@"%d", tweet.retweetCount];
-    
-    
+    cell.screenName.text = tweet.user.screenName;
+
+    cell.tweet = tweet;
     NSString *fullURLString = tweet.user.profilePhoto;
     NSURL *actualURL = [NSURL URLWithString:fullURLString];
     [cell.profilePhoto setImageWithURL:actualURL];
@@ -91,6 +101,7 @@
     // Pass the selected object to the new view controller.
     id vc = [segue destinationViewController];
 }
+
 
 
 

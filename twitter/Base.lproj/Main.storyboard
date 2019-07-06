@@ -125,6 +125,7 @@
                                                     <rect key="frame" x="270.5" y="83" width="30" height="30"/>
                                                     <state key="normal" image="favor-icon"/>
                                                     <connections>
+                                                        <action selector="didFavorite:" destination="cnS-U3-9ss" eventType="touchUpInside" id="MZA-2g-1cd"/>
                                                         <action selector="didTapFavorite:" destination="6Er-vq-fcz" eventType="touchUpInside" id="fCm-gP-dVN"/>
                                                     </connections>
                                                 </button>
@@ -138,7 +139,7 @@
                                                     <rect key="frame" x="169.5" y="83" width="30" height="30"/>
                                                     <state key="normal" image="retweet-icon"/>
                                                     <connections>
-                                                        <action selector="didRetweet:" destination="6Er-vq-fcz" eventType="touchUpInside" id="4VS-Ml-ury"/>
+                                                        <action selector="didRetweet:" destination="cnS-U3-9ss" eventType="touchUpInside" id="yUg-7P-acE"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -174,9 +175,11 @@
                                             <outlet property="actualTweet" destination="nzw-TV-DW4" id="Px5-ZE-4If"/>
                                             <outlet property="createdAt" destination="7Em-uB-yq8" id="aLT-mh-Vm4"/>
                                             <outlet property="favorite" destination="xHX-Wp-KZP" id="gru-yF-thj"/>
+                                            <outlet property="favoriter" destination="kAE-JX-4jp" id="eXV-Ts-X7D"/>
                                             <outlet property="name" destination="NOj-8O-rqt" id="5a6-Z4-Z4q"/>
                                             <outlet property="profilePhoto" destination="dHa-kN-UM4" id="1zP-LU-hhI"/>
                                             <outlet property="retweeted" destination="a1Y-1U-E34" id="rsc-uc-5Fg"/>
+                                            <outlet property="retweeter" destination="rPI-Ax-xpt" id="AZD-7e-hx4"/>
                                             <outlet property="screenName" destination="f6d-ln-xIb" id="8Xn-Iu-mFb"/>
                                         </connections>
                                     </tableViewCell>
@@ -196,7 +199,12 @@
                         <barButtonItem title="Item" id="uLO-Cc-onC"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Home Timeline" id="MOc-fV-EZE">
-                        <barButtonItem key="rightBarButtonItem" title="Item" id="Eba-xj-NZ7">
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="1Av-AY-4kd">
+                            <connections>
+                                <action selector="logout:" destination="Lbl-k5-U4i" id="vzU-Ls-cFL"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="edit-icon" id="Eba-xj-NZ7">
                             <connections>
                                 <segue destination="sEq-Ai-eYR" kind="presentation" id="l0v-NB-bWo"/>
                             </connections>
@@ -290,6 +298,7 @@
     </scenes>
     <resources>
         <image name="TwitterLogoBlue" width="200" height="200"/>
+        <image name="edit-icon" width="30" height="27"/>
         <image name="favor-icon" width="30" height="30"/>
         <image name="retweet-icon" width="30" height="30"/>
     </resources>
